@@ -1,0 +1,30 @@
+name: 自动编译安卓APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 获取源代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Flutter 环境
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'stable'
+
+      - name: 下载依赖包
+        run: flutter pub get
+
+      - name: 开始编译 APK
+        run: flutter build apk --release
+
+      - name: 提取生成的安装包
+        uses: actions/upload-artifact@v4
+        with:
+          name: hikari-novel-app
+          path: build/app/outputs/flutter-apk/app-release.apk
